@@ -1,0 +1,1 @@
+web: tensorflow_model_server --model_config_file=/models/models.config
