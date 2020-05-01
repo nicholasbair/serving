@@ -36,7 +36,7 @@ COPY --from=build_image /usr/local/bin/tensorflow_model_server /usr/bin/tensorfl
 
 # Expose ports
 # gRPC
-EXPOSE 8500
+# EXPOSE 8500
 
 # REST
 EXPOSE 8501
@@ -47,12 +47,13 @@ RUN mkdir -p ${MODEL_BASE_PATH}
 
 # The only required piece is the model name in order to differentiate endpoints
 ENV MODEL_NAME=model
+ENV MODEL_CONFIG=config
 
 # Create a script that runs the model server so we can use environment variables
 # while also passing in arguments from the docker command line
 RUN echo '#!/bin/bash \n\n\
-tensorflow_model_server --port=8500 --rest_api_port=8501 \
---model_config_file=/models/models.config \
+tensorflow_model_server --rest_api_port=8501 \
+--model_config_file=${MODEL_CONFIG} \
 "$@"' > /usr/bin/tf_serving_entrypoint.sh \
 && chmod +x /usr/bin/tf_serving_entrypoint.sh
 
